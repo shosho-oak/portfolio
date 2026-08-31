@@ -9,6 +9,7 @@ import {
   MwfrPreview,
   ProductPilotWorkPreview,
 } from "@/components/site/project-previews";
+import { ProjectShowcase } from "@/components/site/project-showcase";
 import { Reveal } from "@/components/site/reveal";
 import { Section, SectionHeader } from "@/components/site/section";
 import { PROJECTS, type Project } from "@/lib/content";
@@ -29,19 +30,17 @@ function ProjectVisual({
   project,
   className,
   priority = false,
-  // Must match how wide the card actually renders, or Next serves a variant
-  // too small for the box and the screenshot looks soft.
-  sizes = "(max-width: 1024px) 100vw, 60vw",
 }: {
   project: Project;
   className?: string;
   priority?: boolean;
-  sizes?: string;
 }) {
   if (project.layout === "phones" && project.images.length > 0) {
     return (
       <div className={className}>
-        <PhoneRow project={project} />
+        <HoverLift>
+          <PhoneRow project={project} />
+        </HoverLift>
         {project.icon ? (
           <div className="mt-6 flex items-center gap-4 lg:mt-10">
             <Image
@@ -60,31 +59,20 @@ function ProjectVisual({
     );
   }
 
-  const [primary] = project.images;
-
-  if (primary) {
+  if (project.images.length > 0) {
     return (
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-[20px] border border-line bg-surface shadow-card",
-          project.aspect,
-          className,
-        )}
-      >
-        <Image
-          src={primary.src}
-          alt={primary.alt}
-          fill
-          priority={priority}
-          sizes={sizes}
-          className="object-cover object-top"
-        />
+      <div className={className}>
+        <ProjectShowcase project={project} priority={priority} />
       </div>
     );
   }
 
   const Preview = PREVIEWS[project.slug as keyof typeof PREVIEWS];
-  return <Preview className={className} />;
+  return (
+    <HoverLift>
+      <Preview className={className} />
+    </HoverLift>
+  );
 }
 
 /**
@@ -117,49 +105,6 @@ function PhoneRow({ project }: { project: Project }) {
   );
 }
 
-const GALLERY_COLUMNS: Record<number, string> = {
-  1: "sm:grid-cols-1",
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-3",
-  4: "sm:grid-cols-4",
-};
-
-/** The remaining screens, as a quiet strip under the main visual. */
-function ProjectGallery({ project }: { project: Project }) {
-  if (project.layout === "phones") return null;
-  const rest = project.images.slice(1);
-  if (rest.length === 0) return null;
-
-  const columns = GALLERY_COLUMNS[Math.min(rest.length, 4)];
-
-  return (
-    <ul className={cn("mt-3 grid grid-cols-2 gap-3", columns)}>
-      {rest.map((image) => (
-        <li
-          key={image.src}
-          className={cn(
-            "relative overflow-hidden rounded-xl border border-line bg-surface",
-            // A lone thumbnail gets a wider box than a row of them
-            rest.length === 1 ? "aspect-[16/9]" : "aspect-[4/3]",
-          )}
-        >
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            sizes="(max-width: 640px) 50vw, 25vw"
-            className={cn(
-              "object-cover",
-              // Screenshots read from the top; standalone artwork centres
-              image.src.includes("icon") ? "object-center p-4" : "object-top",
-            )}
-          />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 export function Work() {
   const [mthmr, mwfr, productPilot] = PROJECTS;
 
@@ -173,10 +118,6 @@ export function Work() {
       />
 
       <div className="mt-20 flex flex-col gap-24 lg:mt-28 lg:gap-32">
-        {/*
-          Below `sm` the previews take their natural height — a fixed aspect
-          box that narrow would crop the schematic rather than scale it.
-        */}
         {/* 01 — visual leads from the left */}
         <ProjectRow
           project={mthmr}
@@ -185,7 +126,7 @@ export function Work() {
           priority
         />
 
-        {/* 02 — mirrored and smaller, so the rhythm breathes */}
+        {/* 02 — mirrored, so the rhythm alternates */}
         <ProjectRow
           project={mwfr}
           reverse
@@ -193,8 +134,12 @@ export function Work() {
           metaClassName="lg:col-span-4 lg:col-start-1 lg:self-center"
         />
 
-        {/* 03 — full width. The newest project gets the climax of the section. */}
-        <FeaturedProject project={productPilot} />
+        {/* 03 — back to the left, matching 01's proportions */}
+        <ProjectRow
+          project={productPilot}
+          visualClassName="lg:col-span-7 lg:col-start-1"
+          metaClassName="lg:col-span-4 lg:col-start-9"
+        />
       </div>
     </Section>
   );
@@ -218,10 +163,7 @@ function ProjectRow({
       <Reveal
         className={cn("order-1", visualClassName, reverse && "lg:order-2")}
       >
-        <HoverLift>
-          <ProjectVisual project={project} priority={priority} />
-        </HoverLift>
-        <ProjectGallery project={project} />
+        <ProjectVisual project={project} priority={priority} />
       </Reveal>
 
       <Reveal
@@ -229,57 +171,6 @@ function ProjectRow({
         className={cn("order-2", metaClassName, reverse && "lg:order-1")}
       >
         <ProjectMeta project={project} />
-      </Reveal>
-    </article>
-  );
-}
-
-function FeaturedProject({ project }: { project: Project }) {
-  return (
-    <article>
-      <Reveal className="grid gap-y-6 border-t border-line pt-6 lg:grid-cols-12 lg:gap-x-10">
-        <div className="flex items-start gap-4 lg:col-span-7">
-          <span className="label-mono pt-2 text-muted-foreground">
-            {project.index}
-          </span>
-          <div className="min-w-0">
-            <h3 className="display text-[clamp(1.6rem,5.5vw,3.5rem)]">
-              {project.name}
-            </h3>
-            <p className="label-mono mt-4 text-muted-foreground">
-              {project.type}
-            </p>
-          </div>
-        </div>
-
-        <div className="lg:col-span-5 lg:pt-2">
-          <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted-foreground sm:text-base">
-            {project.summary}
-          </p>
-          {project.detail ? (
-            <p className="mt-4 max-w-[46ch] text-[14px] leading-[1.65] text-muted-foreground/85">
-              {project.detail}
-            </p>
-          ) : null}
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.08} className="mt-10">
-        <HoverLift>
-          <ProjectVisual
-            project={project}
-            sizes="(max-width: 1024px) 100vw, 1320px"
-          />
-        </HoverLift>
-        <ProjectGallery project={project} />
-      </Reveal>
-
-      <Reveal
-        delay={0.12}
-        className="mt-8 flex flex-col gap-6 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <Tags tags={project.tags} accent={project.accent} />
-        <ProjectAction project={project} />
       </Reveal>
     </article>
   );

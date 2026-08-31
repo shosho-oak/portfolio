@@ -84,11 +84,20 @@ export const PROJECTS: readonly Project[] = [
     tags: ["Product design", "UX/UI", "Merchant dashboard", "Design systems"],
     accent: "var(--product)",
     links: [], // No public product link for the merchant dashboard
-    // Screens provided by Shahad. All figures shown are placeholder/demo data.
+    // The five root screens only — the design-system folder is held back
+    // for later. All figures shown are placeholder/demo data.
     images: [
+      {
+        src: "/work/mthmr/sign-up.png",
+        alt: "Mthmr sign-up flow: a four-step account creation form beside the product's branded panel",
+      },
       {
         src: "/work/mthmr/home.png",
         alt: "Mthmr merchant dashboard home, showing offer budgets, competitor ranking and performance charts",
+      },
+      {
+        src: "/work/mthmr/customer-behavior.png",
+        alt: "Mthmr customer behaviour analytics, broken down by age, gender and client type",
       },
       {
         src: "/work/mthmr/performance-page.png",
@@ -97,14 +106,6 @@ export const PROJECTS: readonly Project[] = [
       {
         src: "/work/mthmr/financial-overview.png",
         alt: "Mthmr financial overview, with wallet balance, payment methods, transaction history and invoices",
-      },
-      {
-        src: "/work/mthmr/customer-behavior.png",
-        alt: "Mthmr customer behaviour analytics, broken down by age, gender and client type",
-      },
-      {
-        src: "/work/mthmr/design-system/navigational-elements.png",
-        alt: "Mthmr design system: buttons, tabs, navigation and control states",
       },
     ],
     aspect: "aspect-[5/4]",
