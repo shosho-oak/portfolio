@@ -53,7 +53,11 @@ export type Project = {
    * as a strip beneath it. An empty array falls back to the schematic.
    */
   images: readonly { src: string; alt: string }[];
-  /** Aspect ratio for the main visual, matched to the artwork so it isn't cropped. */
+  /**
+   * Aspect ratio for the main visual, matched to the artwork so it isn't
+   * cropped. Must apply at every breakpoint — `fill` images have no
+   * intrinsic height, so an unsized parent collapses to nothing.
+   */
   aspect: string;
 };
 
@@ -73,26 +77,30 @@ export const PROJECTS: readonly Project[] = [
     tags: ["Product design", "UX/UI", "Merchant dashboard", "Design systems"],
     accent: "var(--product)",
     links: [], // No public product link for the merchant dashboard
-    // Screens provided by Shahad. The data shown is placeholder/demo data.
+    // Screens provided by Shahad. All figures shown are placeholder/demo data.
     images: [
       {
         src: "/work/mthmr/home.png",
         alt: "Mthmr merchant dashboard home, showing offer budgets, competitor ranking and performance charts",
       },
       {
-        src: "/work/mthmr/customer-behavior.png",
-        alt: "Mthmr customer behaviour analytics, broken down by age, gender and client type",
+        src: "/work/mthmr/performance-page.png",
+        alt: "Mthmr campaign performance view, comparing transactions, sales, AOV and ROAS per offer",
       },
       {
         src: "/work/mthmr/financial-overview.png",
         alt: "Mthmr financial overview, with wallet balance, payment methods, transaction history and invoices",
       },
       {
+        src: "/work/mthmr/customer-behavior.png",
+        alt: "Mthmr customer behaviour analytics, broken down by age, gender and client type",
+      },
+      {
         src: "/work/mthmr/design-system/navigational-elements.png",
         alt: "Mthmr design system: buttons, tabs, navigation and control states",
       },
     ],
-    aspect: "sm:aspect-[5/4]",
+    aspect: "aspect-[5/4]",
   },
   {
     index: "02",
@@ -114,9 +122,22 @@ export const PROJECTS: readonly Project[] = [
         href: "https://apps.apple.com/sa/app/mwfr-موفر/id6751457127",
       },
     ],
-    // TODO: awaiting assets — schematic stays until then
-    images: [],
-    aspect: "sm:aspect-[16/12]",
+    images: [
+      {
+        src: "/work/mwfr/app-preview.png",
+        alt: "Mwfr App Store preview: Arabic offer listings, partner brands, deal detail and coupon redemption screens",
+      },
+      {
+        src: "/work/mwfr/design-system.png",
+        alt: "Mwfr design system: partner brand logos, colour palette, navigation components and app icon explorations",
+      },
+      {
+        src: "/work/mwfr/app-icon.png",
+        alt: "Mwfr app icon",
+      },
+    ],
+    // Cropped tighter on mobile — the full 2.74 strip would be ~110px tall
+    aspect: "aspect-[16/10] sm:aspect-[2550/932]",
   },
   {
     index: "03",
@@ -139,9 +160,29 @@ export const PROJECTS: readonly Project[] = [
       },
       { label: "GitHub", href: "https://github.com/shosho-oak/productpilot" },
     ],
-    // TODO: add captures of the concept — schematic stays until then
-    images: [],
-    aspect: "sm:aspect-[16/9]",
+    images: [
+      {
+        src: "/work/productpilot/dashboard.png",
+        alt: "ProductPilot dashboard concept: project stats, AI insight cards, active projects and upcoming releases",
+      },
+      {
+        src: "/work/productpilot/ai-workspace.png",
+        alt: "ProductPilot AI workspace concept, with a conversation panel and generated product artifacts",
+      },
+      {
+        src: "/work/productpilot/roadmap.png",
+        alt: "ProductPilot roadmap concept",
+      },
+      {
+        src: "/work/productpilot/backlog.png",
+        alt: "ProductPilot backlog concept",
+      },
+      {
+        src: "/work/productpilot/documents.png",
+        alt: "ProductPilot documents concept",
+      },
+    ],
+    aspect: "aspect-[1350/942]",
   },
 ];
 

@@ -29,10 +29,14 @@ function ProjectVisual({
   project,
   className,
   priority = false,
+  // Must match how wide the card actually renders, or Next serves a variant
+  // too small for the box and the screenshot looks soft.
+  sizes = "(max-width: 1024px) 100vw, 60vw",
 }: {
   project: Project;
   className?: string;
   priority?: boolean;
+  sizes?: string;
 }) {
   const [primary] = project.images;
 
@@ -50,7 +54,7 @@ function ProjectVisual({
           alt={primary.alt}
           fill
           priority={priority}
-          sizes="(max-width: 1024px) 100vw, 60vw"
+          sizes={sizes}
           className="object-cover object-top"
         />
       </div>
@@ -58,27 +62,44 @@ function ProjectVisual({
   }
 
   const Preview = PREVIEWS[project.slug as keyof typeof PREVIEWS];
-  return <Preview className={cn(project.aspect, className)} />;
+  return <Preview className={className} />;
 }
+
+const GALLERY_COLUMNS: Record<number, string> = {
+  1: "sm:grid-cols-1",
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-4",
+};
 
 /** The remaining screens, as a quiet strip under the main visual. */
 function ProjectGallery({ project }: { project: Project }) {
   const rest = project.images.slice(1);
   if (rest.length === 0) return null;
 
+  const columns = GALLERY_COLUMNS[Math.min(rest.length, 4)];
+
   return (
-    <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <ul className={cn("mt-3 grid grid-cols-2 gap-3", columns)}>
       {rest.map((image) => (
         <li
           key={image.src}
-          className="relative aspect-[4/3] overflow-hidden rounded-xl border border-line bg-surface"
+          className={cn(
+            "relative overflow-hidden rounded-xl border border-line bg-surface",
+            // A lone thumbnail gets a wider box than a row of them
+            rest.length === 1 ? "aspect-[16/9]" : "aspect-[4/3]",
+          )}
         >
           <Image
             src={image.src}
             alt={image.alt}
             fill
-            sizes="(max-width: 1024px) 33vw, 20vw"
-            className="object-cover object-top"
+            sizes="(max-width: 640px) 50vw, 25vw"
+            className={cn(
+              "object-cover",
+              // Screenshots read from the top; standalone artwork centres
+              image.src.includes("icon") ? "object-center p-4" : "object-top",
+            )}
           />
         </li>
       ))}
@@ -192,7 +213,10 @@ function FeaturedProject({ project }: { project: Project }) {
 
       <Reveal delay={0.08} className="mt-10">
         <HoverLift>
-          <ProjectVisual project={project} />
+          <ProjectVisual
+            project={project}
+            sizes="(max-width: 1024px) 100vw, 1320px"
+          />
         </HoverLift>
         <ProjectGallery project={project} />
       </Reveal>
