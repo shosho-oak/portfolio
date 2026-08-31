@@ -1,0 +1,191 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------
+   Foundation palette
+   The interface stays neutral. Accents are used sparingly, as signal.
+------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Foundation */
+  --background: #faf8f3;
+  --surface: #ffffff;
+  --foreground: #101010;
+  --muted-foreground: #686868;
+
+  /* Accents */
+  --ai: #72f53c;
+  --product: #11cfe0;
+  --design: #6a2ae6;
+  --highlight: #ff7a00;
+
+  /* Hairlines — the editorial grid is drawn with these */
+  --line: color-mix(in oklab, var(--foreground) 10%, transparent);
+  --line-soft: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --line-strong: color-mix(in oklab, var(--foreground) 16%, transparent);
+
+  /* Warm neutral one step off the background */
+  --sand: #f2eee6;
+
+  /* shadcn tokens mapped onto the palette */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--sand);
+  --accent: var(--sand);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--foreground);
+  --radius: 0.75rem;
+
+  /* Motion + elevation */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-card:
+    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 12px 24px -12px color-mix(in oklab, var(--foreground) 10%, transparent),
+    0 40px 72px -32px color-mix(in oklab, var(--foreground) 14%, transparent);
+  --shadow-chip:
+    0 1px 2px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 10px 24px -12px color-mix(in oklab, var(--foreground) 18%, transparent);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-sand: var(--sand);
+
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+
+  --color-ai: var(--ai);
+  --color-product: var(--product);
+  --color-design: var(--design);
+  --color-highlight: var(--highlight);
+
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-heading: var(--font-display);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-chip: var(--shadow-chip);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+    /* Turned off again in the reduced-motion block at the end of this file */
+    scroll-behavior: smooth;
+  }
+
+  /* Clears the fixed navigation when jumping to a section */
+  :target,
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "liga" 1,
+      "calt" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--ai);
+    color: var(--foreground);
+  }
+
+  /*
+   * One global focus indicator for everything that doesn't bring its own.
+   * Button-styled elements are excluded because the button recipe already
+   * draws a ring — without this, focus would render twice.
+   */
+  :focus-visible:not([data-slot="button"]) {
+    outline: 2px solid var(--foreground);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Micro-label type: the mono captions that carry the editorial grid */
+  .label-mono {
+    @apply font-mono text-[10px] leading-none font-medium tracking-[0.16em] uppercase;
+  }
+
+  /* Display type: tight, heavy, optically corrected */
+  .display {
+    @apply font-display font-extrabold;
+    letter-spacing: -0.045em;
+    line-height: 0.96;
+    font-variant-ligatures: none;
+  }
+
+  /*
+   * Each headline line is its own mask. The padding keeps the accent bar
+   * from being clipped; the matching negative margin hands the space back
+   * so the leading stays exactly `line-height`.
+   */
+  .display-line {
+    @apply block overflow-hidden;
+    padding-bottom: 0.16em;
+    margin-bottom: -0.16em;
+  }
+}
+
+/* Respect the user's motion preference everywhere, including CSS keyframes */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
