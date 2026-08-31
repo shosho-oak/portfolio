@@ -64,6 +64,8 @@ export type Project = {
    * "phones" = a row of portrait app screens, shown whole.
    */
   layout: "screenshot" | "phones";
+  /** Product mark, shown under a phone row. Already rounded, with alpha. */
+  icon: { src: string; alt: string } | null;
 };
 
 export const PROJECTS: readonly Project[] = [
@@ -107,6 +109,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     aspect: "aspect-[5/4]",
     layout: "screenshot",
+    icon: null,
   },
   {
     index: "02",
@@ -131,20 +134,24 @@ export const PROJECTS: readonly Project[] = [
     // Portrait app screens, shown whole rather than cropped into a strip.
     images: [
       {
-        src: "/work/mwfr/offers.png",
-        alt: "Mwfr offers list in Arabic, with search, sorting and saved deals from partner brands",
+        src: "/work/mwfr/explore.png",
+        alt: "Mwfr explore view, grouping offers by most used, newest, best value and recently used",
       },
       {
         src: "/work/mwfr/coupon-detail.png",
         alt: "Mwfr coupon detail sheet, showing the discount terms and a copyable promo code",
       },
       {
-        src: "/work/mwfr/explore.png",
-        alt: "Mwfr explore view, grouping offers by most used, newest, best value and recently used",
+        src: "/work/mwfr/offers.png",
+        alt: "Mwfr offers list in Arabic, with search, sorting and saved deals from partner brands",
       },
     ],
     aspect: "aspect-[402/874]",
     layout: "phones",
+    icon: {
+      src: "/work/mwfr/app-icon-2.png",
+      alt: "Mwfr app icon",
+    },
   },
   {
     index: "03",
@@ -191,6 +198,7 @@ export const PROJECTS: readonly Project[] = [
     ],
     aspect: "aspect-[1350/942]",
     layout: "screenshot",
+    icon: null,
   },
 ];
 

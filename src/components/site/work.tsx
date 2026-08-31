@@ -42,6 +42,20 @@ function ProjectVisual({
     return (
       <div className={className}>
         <PhoneRow project={project} />
+        {project.icon ? (
+          <div className="mt-6 flex items-center gap-4 lg:mt-10">
+            <Image
+              src={project.icon.src}
+              alt={project.icon.alt}
+              width={128}
+              height={128}
+              // The artwork is already a rounded squircle with alpha, so it
+              // needs no frame of its own — just a little lift.
+              className="size-14 shrink-0 rounded-[15px] shadow-chip sm:size-16"
+            />
+            <span className="label-mono text-muted-foreground">App icon</span>
+          </div>
+        ) : null}
       </div>
     );
   }
