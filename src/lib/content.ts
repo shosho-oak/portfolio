@@ -59,6 +59,11 @@ export type Project = {
    * intrinsic height, so an unsized parent collapses to nothing.
    */
   aspect: string;
+  /**
+   * "screenshot" = one lead image with a thumbnail strip.
+   * "phones" = a row of portrait app screens, shown whole.
+   */
+  layout: "screenshot" | "phones";
 };
 
 export const PROJECTS: readonly Project[] = [
@@ -101,6 +106,7 @@ export const PROJECTS: readonly Project[] = [
       },
     ],
     aspect: "aspect-[5/4]",
+    layout: "screenshot",
   },
   {
     index: "02",
@@ -122,22 +128,23 @@ export const PROJECTS: readonly Project[] = [
         href: "https://apps.apple.com/sa/app/mwfr-موفر/id6751457127",
       },
     ],
+    // Portrait app screens, shown whole rather than cropped into a strip.
     images: [
       {
-        src: "/work/mwfr/app-preview.png",
-        alt: "Mwfr App Store preview: Arabic offer listings, partner brands, deal detail and coupon redemption screens",
+        src: "/work/mwfr/offers.png",
+        alt: "Mwfr offers list in Arabic, with search, sorting and saved deals from partner brands",
       },
       {
-        src: "/work/mwfr/design-system.png",
-        alt: "Mwfr design system: partner brand logos, colour palette, navigation components and app icon explorations",
+        src: "/work/mwfr/coupon-detail.png",
+        alt: "Mwfr coupon detail sheet, showing the discount terms and a copyable promo code",
       },
       {
-        src: "/work/mwfr/app-icon.png",
-        alt: "Mwfr app icon",
+        src: "/work/mwfr/explore.png",
+        alt: "Mwfr explore view, grouping offers by most used, newest, best value and recently used",
       },
     ],
-    // Cropped tighter on mobile — the full 2.74 strip would be ~110px tall
-    aspect: "aspect-[16/10] sm:aspect-[2550/932]",
+    aspect: "aspect-[402/874]",
+    layout: "phones",
   },
   {
     index: "03",
@@ -183,6 +190,7 @@ export const PROJECTS: readonly Project[] = [
       },
     ],
     aspect: "aspect-[1350/942]",
+    layout: "screenshot",
   },
 ];
 

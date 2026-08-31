@@ -38,6 +38,14 @@ function ProjectVisual({
   priority?: boolean;
   sizes?: string;
 }) {
+  if (project.layout === "phones" && project.images.length > 0) {
+    return (
+      <div className={className}>
+        <PhoneRow project={project} />
+      </div>
+    );
+  }
+
   const [primary] = project.images;
 
   if (primary) {
@@ -65,6 +73,36 @@ function ProjectVisual({
   return <Preview className={className} />;
 }
 
+/**
+ * A row of portrait app screens, shown whole. Cropping these into the
+ * landscape thumbnail grid would destroy them — a phone screen is 0.46:1.
+ */
+function PhoneRow({ project }: { project: Project }) {
+  return (
+    <ul className="grid grid-cols-3 gap-3 sm:gap-4">
+      {project.images.map((image, index) => (
+        <li
+          key={image.src}
+          className={cn(
+            "relative overflow-hidden rounded-xl border border-line bg-surface shadow-card sm:rounded-2xl",
+            project.aspect,
+            // A gentle stagger, so the row reads as a composition
+            index === 1 ? "lg:-translate-y-4" : "lg:translate-y-2",
+          )}
+        >
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            sizes="(max-width: 640px) 32vw, (max-width: 1024px) 30vw, 20vw"
+            className="object-cover object-top"
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 const GALLERY_COLUMNS: Record<number, string> = {
   1: "sm:grid-cols-1",
   2: "sm:grid-cols-2",
@@ -74,6 +112,7 @@ const GALLERY_COLUMNS: Record<number, string> = {
 
 /** The remaining screens, as a quiet strip under the main visual. */
 function ProjectGallery({ project }: { project: Project }) {
+  if (project.layout === "phones") return null;
   const rest = project.images.slice(1);
   if (rest.length === 0) return null;
 
